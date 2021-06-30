@@ -43,9 +43,6 @@ data = soup.find_all('tbody')
 
 titles: list = get_title(soup)
 
-# инициализация table_dict – словарь, в котром ключи – названия полей таблицы, значения – списки значений в
-# соответствующих полях
-
 # initialization of table_dict-a dictionary whose keys are the names of table fields, values are lists of values in the
 # corresponding fields
 table_dict: dict = {}
