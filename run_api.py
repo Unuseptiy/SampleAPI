@@ -43,7 +43,7 @@ class AuthHandler(BaseHandler, ABC):
 
 
 class GetDataHandler(BaseHandler, ABC):
-    """Хэндлер для отправки данных из таблицы"""
+    """Handler for sending data from the collected_data table"""
     def get(self):
         if not self.current_user:
             # If the user is not authenticated, an error occurs
@@ -103,7 +103,7 @@ if __name__ == "__main__":
                   Column('last_request', DateTime())
                   )
 
-    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
+    with open(r"../config.yaml", "r") as file:
         d = yaml.safe_load(file)
 
     application = tornado.web.Application([
