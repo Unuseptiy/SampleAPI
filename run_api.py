@@ -40,6 +40,7 @@ class AuthHandler(BaseHandler, ABC):
             else:
                 # if this password is incorrect – an error
                 raise tornado.web.HTTPError(404)
+        conn.close()
 
 
 class GetDataHandler(BaseHandler, ABC):
