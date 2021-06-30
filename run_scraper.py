@@ -74,7 +74,7 @@ if parser.parse_args().dry_run:
     print(tabulate(df, headers='keys', tablefmt='psql'))
 else:
     # else table saves to the database
-    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
+    with open(r"../config.yaml", "r") as file:
         d = yaml.safe_load(file)
 
     url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
