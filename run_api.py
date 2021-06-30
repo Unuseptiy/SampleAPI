@@ -3,7 +3,7 @@ from hashlib import sha256
 
 import tornado.ioloop
 import tornado.web
-from sqlalchemy import create_engine, select, Table, Column, Integer, String, MetaData, DateTime
+from sqlalchemy import create_engine, select, Table, Column, Integer, String, MetaData, DateTime, update
 from datetime import datetime
 
 import yaml
@@ -33,6 +33,9 @@ class AuthHandler(BaseHandler, ABC):
             # if this username does not exist – an error
             raise tornado.web.HTTPError(404)
         else:
+            # ins = users.c.last_request.insert().values(last_request=datetime.utcnow())
+            u = update(users).where(users.c.login == self.get_argument("login"))
+            conn.execute(u)
             if sha_entered_pass == row[2]:
                 if not self.get_secure_cookie("mycookie"):
                     # setting a cookie if the password is correct and the cookie is not set
@@ -101,10 +104,10 @@ if __name__ == "__main__":
                   Column('login', String(100), unique=True, nullable=False),
                   Column('password', String(100), nullable=False),
                   Column('created_at', DateTime(), default=datetime.utcnow(), nullable=False),
-                  Column('last_request', DateTime())
+                  Column('last_request', DateTime(), onupdate=datetime.utcnow())
                   )
 
-    with open(r"../config.yaml", "r") as file:
+    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
         d = yaml.safe_load(file)
 
     application = tornado.web.Application([

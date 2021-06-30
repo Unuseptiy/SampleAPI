@@ -6,7 +6,7 @@ from sqlalchemy_utils import database_exists
 import yaml
 
 
-with open(r"../config.yaml", "r") as file:
+with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
     d = yaml.safe_load(file)
 
 url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
@@ -40,6 +40,6 @@ users = Table('users', metadata,
               Column('login', String(100), unique=True, nullable=False),
               Column('password', String(100), nullable=False),
               Column('created_at', DateTime(), default=datetime.utcnow(), nullable=False),
-              Column('last_request', DateTime())
+              Column('last_request', DateTime(), onupdate=datetime.utcnow())
               )
 metadata.create_all(engine)

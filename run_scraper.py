@@ -74,7 +74,7 @@ if parser.parse_args().dry_run:
     print(tabulate(df, headers='keys', tablefmt='psql'))
 else:
     # else table saves to the database
-    with open(r"../config.yaml", "r") as file:
+    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
         d = yaml.safe_load(file)
 
     url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
@@ -100,7 +100,7 @@ else:
                   Column('login', String(100), unique=True, nullable=False),
                   Column('password', String(100), nullable=False),
                   Column('created_at', DateTime(), default=datetime.utcnow(), nullable=False),
-                  Column('last_request', DateTime())
+                  Column('last_request', DateTime(), onupdate=datetime.utcnow())
                   )
     conn = engine.connect()
     s = select([collected_data])
