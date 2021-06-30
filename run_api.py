@@ -33,7 +33,6 @@ class AuthHandler(BaseHandler, ABC):
             # if this username does not exist – an error
             raise tornado.web.HTTPError(404)
         else:
-            # ins = users.c.last_request.insert().values(last_request=datetime.utcnow())
             u = update(users).where(users.c.login == self.get_argument("login"))
             conn.execute(u)
             if sha_entered_pass == row[2]:
