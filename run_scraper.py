@@ -1,13 +1,17 @@
 # scraper.py
 import argparse
+import os
+
 import requests
 from bs4 import BeautifulSoup
 from pyparsing import *
 import pandas as pd
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, select, delete
+from sqlalchemy import create_engine
 from tabulate import tabulate
 from datetime import datetime
 import yaml
+from sqlalchemy.orm import Session
+from db_init import CollectedData
 
 
 def get_title(soup_obj: BeautifulSoup) -> list:
@@ -43,6 +47,9 @@ data = soup.find_all('tbody')
 
 titles: list = get_title(soup)
 
+# инициализация table_dict – словарь, в котром ключи – названия полей таблицы, значения – списки значений в
+# соответствующих полях
+
 # initialization of table_dict-a dictionary whose keys are the names of table fields, values are lists of values in the
 # corresponding fields
 table_dict: dict = {}
@@ -71,48 +78,27 @@ if parser.parse_args().dry_run:
     print(tabulate(df, headers='keys', tablefmt='psql'))
 else:
     # else table saves to the database
-    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
+    path = os.getcwd()
+    with open(os.path.join(path, "config.yaml"), "r") as file:
         d = yaml.safe_load(file)
 
     url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
                                                                                          DB_PASSWORD=d["DB_PASSWORD"],
                                                                                          DB_NAME=d["DB_NAME"])
     engine = create_engine(url)
-    metadata = MetaData()
-
-    # creating collected_data table
-    collected_data = Table('collected_data', metadata,
-                           Column('id', Integer(), primary_key=True, nullable=False),
-                           Column('country', String(100), nullable=False),
-                           Column('country_code', String(50), nullable=False),
-                           Column('iso_codes', String(50), nullable=False),
-                           Column('population', String(200)),
-                           Column('area', String(200), nullable=False),
-                           Column('gdp', String(50)),
-                           )
-
-    # creating users table
-    users = Table('users', metadata,
-                  Column('id', Integer(), primary_key=True, nullable=False),
-                  Column('login', String(100), unique=True, nullable=False),
-                  Column('password', String(100), nullable=False),
-                  Column('created_at', DateTime(), default=datetime.utcnow(), nullable=False),
-                  Column('last_request', DateTime(), onupdate=datetime.utcnow())
-                  )
-    conn = engine.connect()
-    s = select([collected_data])
-    r = conn.execute(s)
+    session = Session(bind=engine)
+    data_about_countries = session.query(CollectedData).all()
 
     # checking whether the collected_data table is empty
-    if r.fetchall():
+    if data_about_countries:
         # удаление всех записей из таблицы collected_data
-        s = delete(collected_data)
-        rs = conn.execute(s)
+        # deleting all records from the collected_data table
+        session.query(CollectedData).delete(synchronize_session='fetch')
+        session.commit()
 
     # adding records to collected_data table
     for i in range(len(table_dict[next(iter(table_dict))])):
-        ins = collected_data.insert().values(
-            id=i,
+        ins = CollectedData(
             country=table_dict['COUNTRY'][i],
             country_code=table_dict['COUNTRY CODE'][i],
             iso_codes=table_dict['ISO CODES'][i],
@@ -120,5 +106,5 @@ else:
             area=table_dict['AREA KM'][i],
             gdp=table_dict['GDP $USD'][i],
         )
-        r = conn.execute(ins)
-    conn.close()
+        session.add(ins)
+        session.commit()
