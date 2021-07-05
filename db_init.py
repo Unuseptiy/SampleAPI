@@ -30,27 +30,6 @@ class Users(Base):
     last_request = Column(DateTime(), onupdate=datetime.utcnow())
 
 
-# metadata = MetaData()
-# # creating database tables
-# collected_data = Table('collected_data', metadata,
-#                        Column('id', Integer(), primary_key=True, nullable=False),
-#                        Column('country', String(100), nullable=False),
-#                        Column('country_code', String(50), nullable=False),
-#                        Column('iso_codes', String(50), nullable=False),
-#                        Column('population', String(200)),
-#                        Column('area', String(200), nullable=False),
-#                        Column('gdp', String(50)),
-#                        )
-#
-# users = Table('users', metadata,
-#               Column('id', Integer(), primary_key=True, nullable=False),
-#               Column('login', String(100), unique=True, nullable=False),
-#               Column('password', String(100), nullable=False),
-#               Column('created_at', DateTime(), default=datetime.utcnow(), nullable=False),
-#               Column('last_request', DateTime(), onupdate=datetime.utcnow())
-#               )
-
-
 if __name__ == "__main__":
     path = os.getcwd()
     # print(path)
