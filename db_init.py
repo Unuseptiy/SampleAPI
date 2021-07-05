@@ -5,6 +5,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import database_exists
 import yaml
+import os
 
 Base = declarative_base()
 
@@ -51,7 +52,9 @@ class Users(Base):
 
 
 if __name__ == "__main__":
-    with open(r"/Users/elenakozenko/Desktop/task_job/config.yaml", "r") as file:
+    path = os.getcwd()
+    # print(path)
+    with open(os.path.join(path, "config.yaml"), "r") as file:
         d = yaml.safe_load(file)
 
     url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
