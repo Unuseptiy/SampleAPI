@@ -75,7 +75,7 @@ class GetDataHandler(BaseHandler, ABC):
 
 if __name__ == "__main__":
     path = os.getcwd()
-    with open(os.path.join(path, "../config.yaml"), "r") as file:
+    with open(os.path.join(path, "config.yaml"), "r") as file:
         d = yaml.safe_load(file)
 
     url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
