@@ -1,17 +1,13 @@
 # scraper.py
 import argparse
-import os
 
 import requests
 from bs4 import BeautifulSoup
 from pyparsing import *
 import pandas as pd
-from sqlalchemy import create_engine
 from tabulate import tabulate
-from datetime import datetime
-import yaml
-from sqlalchemy.orm import Session
-from db_init import CollectedData
+from database.db_init import CollectedData
+from database.get_engine import Session
 
 
 def get_title(soup_obj: BeautifulSoup) -> list:
@@ -47,9 +43,6 @@ data = soup.find_all('tbody')
 
 titles: list = get_title(soup)
 
-# инициализация table_dict – словарь, в котром ключи – названия полей таблицы, значения – списки значений в
-# соответствующих полях
-
 # initialization of table_dict-a dictionary whose keys are the names of table fields, values are lists of values in the
 # corresponding fields
 table_dict: dict = {}
@@ -77,16 +70,8 @@ if parser.parse_args().dry_run:
     # if --dry_run True, then table prints to console
     print(tabulate(df, headers='keys', tablefmt='psql'))
 else:
-    # else table saves to the database
-    path = os.getcwd()
-    with open(os.path.join(path, "config.yaml"), "r") as file:
-        d = yaml.safe_load(file)
+    session = Session()
 
-    url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".format(DB_USERNAME=d["DB_USERNAME"],
-                                                                                         DB_PASSWORD=d["DB_PASSWORD"],
-                                                                                         DB_NAME=d["DB_NAME"])
-    engine = create_engine(url)
-    session = Session(bind=engine)
     data_about_countries = session.query(CollectedData).all()
 
     # checking whether the collected_data table is empty
