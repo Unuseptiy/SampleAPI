@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Integer, String, Column, DateTime
+from sqlalchemy import create_engine, Integer, String, Column, DateTime
 from datetime import datetime
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -32,7 +32,6 @@ class Users(Base):
 
 if __name__ == "__main__":
     path = os.getcwd()
-    # print(path)
     with open(os.path.join(path, "config.yaml"), "r") as file:
         d = yaml.safe_load(file)
 
