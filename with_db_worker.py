@@ -1,8 +1,10 @@
+from typing import Dict, Union
+
 from database.get_engine import Session
 from database.db_init import CollectedData, Users
 
 
-def get_data() -> dict:
+def get_data() -> Dict[str, Union[list, int]]:
     session = Session()
     data_about_countries = session.query(CollectedData).all()
 
@@ -10,9 +12,9 @@ def get_data() -> dict:
     titles = ['id', 'country', 'country_code', 'iso_codes', 'population', 'area', 'gdp']
 
     # dictionary for inference the information
-    out_dict: dict = {"data": [],
-                      "total": 0
-                      }
+    out_dict = {"data": [],
+                "total": 0
+                }
 
     # counter of the number of records in collected_data
     total = len(data_about_countries)
