@@ -1,4 +1,5 @@
 DB_NAME: countries_db
 DB_PASSWORD: '1111'
 DB_USERNAME: postgres
-#TORNADO_PORT: 8888
+TORNADO_PORT: 8888
+SALT: "lkdsjflaksh34234kljaskjdn"

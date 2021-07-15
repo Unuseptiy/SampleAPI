@@ -13,3 +13,6 @@ url = "postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@localhost/{DB_NAME}".fo
 engine = create_engine(url)
 
 Session = sessionmaker(bind=engine)
+
+SALT = d["SALT"]
+TORNADO_PORT = d["TORNADO_PORT"]

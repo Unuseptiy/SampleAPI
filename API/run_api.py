@@ -2,8 +2,9 @@ from abc import ABC
 from hashlib import sha256
 import tornado.ioloop
 import tornado.web
-from database.get_engine import Session
-import with_db_worker
+
+from database.get_engine import Session, TORNADO_PORT, SALT
+from with_db_worker import is_valid_user, get_data
 
 
 class BaseHandler(tornado.web.RequestHandler, ABC):
@@ -21,9 +22,13 @@ class AuthHandler(BaseHandler, ABC):
         input_login = self.get_argument("login")
 
         if not self.get_secure_cookie("mycookie"):
-            if with_db_worker.is_valid_user(input_login, sha_entered_pass):
+            if is_valid_user(input_login, sha_entered_pass):
                 self.set_secure_cookie("mycookie", input_login)
             else:
+                # self.write("Error 404")
+                # self.set_header("Error", 404)
+                # self.set_status(404)
+                # self.send_error(404)
                 raise tornado.web.HTTPError(404)
 
 
@@ -33,7 +38,7 @@ class GetDataHandler(BaseHandler, ABC):
         if not self.current_user:
             # If the user is not authenticated, an error occurs
             raise tornado.web.HTTPError(401)
-        out_dict = with_db_worker.get_data()
+        out_dict = get_data()
         self.set_header("Content-type", "application/json")
         self.write(out_dict)
 
@@ -44,7 +49,7 @@ if __name__ == "__main__":
     application = tornado.web.Application([
         (r"/api/login", AuthHandler),
         (r"/api/data", GetDataHandler),
-    ], cookie_secret="lkdsjflaksh34234kljaskjdn"
+    ], cookie_secret=SALT
     )
-    application.listen(8888)
+    application.listen(TORNADO_PORT)
     tornado.ioloop.IOLoop.current().start()
