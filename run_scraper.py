@@ -52,12 +52,12 @@ class Scrapper:
             table_dict[title] = []
 
         # table_dict filling
-        i: int = 0
+        ind = 0
         for string in data[0].text.split(sep='\n'):
-            index = i % 8 - 2
+            index = ind % 8 - 2
             if index != -2 and index != -1:
                 table_dict[titles[index]].append(string)
-            i += 1
+            ind += 1
         return table_dict
 
 
