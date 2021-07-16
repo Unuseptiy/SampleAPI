@@ -12,7 +12,7 @@ from database.get_engine import Session
 
 
 class Scrapper:
-    """Class for work with scrapped data"""
+    """Class for working with scrapped data"""
     soup = None
 
     def __init__(self, url_obj):
