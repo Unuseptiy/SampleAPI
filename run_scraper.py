@@ -1,11 +1,11 @@
 # scraper.py
 import argparse
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from pyparsing import *
 import pandas as pd
 from tabulate import tabulate
-from typing import List, Optional
+from typing import List, Dict, Union
 
 from database.db_init import CollectedData
 from database.get_engine import Session
@@ -33,14 +33,14 @@ class Scrapper:
         return titles_func
 
     @staticmethod
-    def get_data():
+    def get_data() -> element.ResultSet:
         """Parses the BeautifulSoup object and returns the table data"""
         # data – data from all tables with <tbody> tag
         data_obj = Scrapper.soup.find_all('tbody')
         return data_obj
 
     @staticmethod
-    def get_parsed_data():
+    def get_parsed_data() -> Dict[str, list]:
         """Composes dict from scrapped table, where keys – table fields, values – table data"""
         titles = Scrapper.get_title()
         data = Scrapper.get_data()
@@ -61,7 +61,7 @@ class Scrapper:
         return table_dict
 
 
-def str2bool(v: str) -> Optional[bool]:
+def str2bool(v: str) -> bool:
     """Converts the entered command-line argument to the required form, or returns an error"""
     if isinstance(v, bool):
         return v
@@ -79,7 +79,6 @@ if __name__ == "__main__":
     scrapper = Scrapper(url)
 
     data_dict = scrapper.get_parsed_data()
-    # print(data_dict)
     df = pd.DataFrame(data=data_dict)
 
     # adding an argument to the command line parser

@@ -1,5 +1,9 @@
+# Database
 DB_NAME: countries_db
 DB_PASSWORD: '1111'
 DB_USERNAME: postgres
+
+# API
 TORNADO_PORT: 8888
 SALT: "lkdsjflaksh34234kljaskjdn"
+LOCAL: "http://localhost:8888"
