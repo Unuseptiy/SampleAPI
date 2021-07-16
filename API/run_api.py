@@ -25,10 +25,6 @@ class AuthHandler(BaseHandler, ABC):
             if is_valid_user(input_login, sha_entered_pass):
                 self.set_secure_cookie("mycookie", input_login)
             else:
-                # self.write("Error 404")
-                # self.set_header("Error", 404)
-                # self.set_status(404)
-                # self.send_error(404)
                 raise tornado.web.HTTPError(404)
 
 
